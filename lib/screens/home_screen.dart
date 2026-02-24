@@ -5,6 +5,7 @@ import 'tenants_screen.dart';
 import 'queries_screen.dart';
 import 'cleaning_requests_screen.dart';
 import 'wifi_password_screen.dart';
+import 'gate_pass_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -38,7 +39,7 @@ class _HomeScreenState extends State<HomeScreen> {
           'Nest Rental',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
-        backgroundColor: Colors.teal,
+        backgroundColor: const Color(0xFF2563EB),
         foregroundColor: Colors.white,
         elevation: 0,
       ),
@@ -58,7 +59,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
                   gradient: const LinearGradient(
-                    colors: [Colors.teal, Colors.tealAccent],
+                    colors: [Color(0xFF2563EB), Color(0xFF60A5FA)],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
@@ -193,6 +194,20 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
                 badge: _stats['pendingCleaning'] ?? 0,
+              ),
+              const SizedBox(height: 12),
+              _buildActionCard(
+                'Gate Pass',
+                'Apply and manage gate passes',
+                Icons.card_membership,
+                Colors.teal,
+                () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const GatePassScreen(),
+                  ),
+                ),
+                badge: _stats['pendingGatePasses'] ?? 0,
               ),
               const SizedBox(height: 12),
               _buildActionCard(

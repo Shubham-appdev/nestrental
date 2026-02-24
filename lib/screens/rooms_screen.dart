@@ -5,6 +5,7 @@ import '../models/tenant.dart';
 import '../services/data_service.dart';
 import 'tenant_details_screen.dart';
 import 'add_tenant_screen.dart';
+import 'buildings_screen.dart';
 
 class RoomsScreen extends StatefulWidget {
   final Building building;
@@ -23,12 +24,13 @@ class _RoomsScreenState extends State<RoomsScreen> {
   @override
   void initState() {
     super.initState();
+    _dataService.initialize();
     _loadRooms();
   }
 
   void _loadRooms() {
     setState(() {
-      _rooms = _dataService.getRoomsByBuilding(widget.building.id);
+      _rooms = List<Room>.from(_dataService.getRoomsByBuilding(widget.building.id));
       if (_filterStatus != null) {
         _rooms = _rooms.where((r) => r.status == _filterStatus).toList();
       }
@@ -62,7 +64,7 @@ class _RoomsScreenState extends State<RoomsScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.building.name),
-        backgroundColor: Colors.teal,
+        backgroundColor: const Color(0xFF2563EB),
         foregroundColor: Colors.white,
         actions: [
           PopupMenuButton<RoomStatus?>(
@@ -169,7 +171,7 @@ class _RoomsScreenState extends State<RoomsScreen> {
                     style: const TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.bold,
-                      color: Colors.teal,
+                      color: const Color(0xFF2563EB),
                     ),
                   ),
                 ],
@@ -318,7 +320,7 @@ class _RoomsScreenState extends State<RoomsScreen> {
                 children: room.amenities
                     .map((amenity) => Chip(
                           label: Text(amenity),
-                          backgroundColor: Colors.teal.withOpacity(0.1),
+                          backgroundColor: const Color(0xFF2563EB).withOpacity(0.1),
                           labelStyle: const TextStyle(fontSize: 12),
                         ))
                     .toList(),
@@ -338,7 +340,7 @@ class _RoomsScreenState extends State<RoomsScreen> {
                 ListTile(
                   contentPadding: EdgeInsets.zero,
                   leading: CircleAvatar(
-                    backgroundColor: Colors.teal,
+                    backgroundColor: const Color(0xFF2563EB),
                     child: Text(
                       tenant.name[0],
                       style: const TextStyle(color: Colors.white),
@@ -378,7 +380,7 @@ class _RoomsScreenState extends State<RoomsScreen> {
                     icon: const Icon(Icons.person_add),
                     label: const Text('Add Tenant'),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.teal,
+                      backgroundColor: const Color(0xFF2563EB),
                       foregroundColor: Colors.white,
                       padding: const EdgeInsets.symmetric(vertical: 12),
                     ),

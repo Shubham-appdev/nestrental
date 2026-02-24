@@ -3,6 +3,7 @@ import '../models/room.dart';
 import '../models/tenant.dart';
 import '../models/query.dart';
 import '../models/cleaning_request.dart';
+import '../models/gate_pass.dart';
 
 class DataService {
   static final DataService _instance = DataService._internal();
@@ -14,6 +15,7 @@ class DataService {
   final List<Tenant> _tenants = [];
   final List<Query> _queries = [];
   final List<CleaningRequest> _cleaningRequests = [];
+  final List<GatePass> _gatePasses = [];
 
   bool _initialized = false;
 
@@ -431,6 +433,39 @@ class DataService {
       createdAt: DateTime.now().subtract(const Duration(hours: 6)),
     ));
 
+    // Sample Gate Passes
+    _gatePasses.add(GatePass(
+      id: 'gp1',
+      tenantId: 't1',
+      tenantName: 'Rahul Sharma',
+      roomNumber: '101',
+      buildingId: 'b1',
+      type: GatePassType.exit,
+      status: GatePassStatus.approved,
+      purpose: 'Weekend trip to hometown',
+      validFrom: DateTime.now().subtract(const Duration(hours: 2)),
+      validUntil: DateTime.now().add(const Duration(days: 2)),
+      createdAt: DateTime.now().subtract(const Duration(days: 1)),
+      approvedAt: DateTime.now().subtract(const Duration(hours: 1)),
+      approvedBy: 'Admin',
+    ));
+
+    _gatePasses.add(GatePass(
+      id: 'gp2',
+      tenantId: 't11',
+      tenantName: 'Arjun Mehta',
+      roomNumber: '201',
+      buildingId: 'b2',
+      type: GatePassType.entry,
+      status: GatePassStatus.pending,
+      purpose: 'Late night entry',
+      validFrom: DateTime.now().add(const Duration(hours: 4)),
+      validUntil: DateTime.now().add(const Duration(hours: 6)),
+      visitorName: 'Guest Visitor',
+      visitorPhone: '9876549999',
+      createdAt: DateTime.now().subtract(const Duration(hours: 2)),
+    ));
+
     _initialized = true;
   }
 
@@ -561,6 +596,24 @@ class DataService {
     }
   }
 
+  // Gate Passes
+  List<GatePass> getGatePasses() => List.unmodifiable(_gatePasses);
+
+  List<GatePass> getGatePassesByBuilding(String buildingId) {
+    return _gatePasses.where((g) => g.buildingId == buildingId).toList();
+  }
+
+  void addGatePass(GatePass gatePass) {
+    _gatePasses.add(gatePass);
+  }
+
+  void updateGatePass(GatePass gatePass) {
+    final index = _gatePasses.indexWhere((g) => g.id == gatePass.id);
+    if (index != -1) {
+      _gatePasses[index] = gatePass;
+    }
+  }
+
   // Statistics
   Map<String, dynamic> getStatistics() {
     final totalRooms = _rooms.length;
@@ -570,6 +623,7 @@ class DataService {
     final totalTenants = _tenants.length;
     final pendingQueries = _queries.where((q) => q.status == QueryStatus.pending).length;
     final pendingCleaning = _cleaningRequests.where((c) => c.status == CleaningStatus.pending).length;
+    final pendingGatePasses = _gatePasses.where((g) => g.status == GatePassStatus.pending).length;
 
     return {
       'totalBuildings': _buildings.length,
@@ -580,6 +634,7 @@ class DataService {
       'totalTenants': totalTenants,
       'pendingQueries': pendingQueries,
       'pendingCleaning': pendingCleaning,
+      'pendingGatePasses': pendingGatePasses,
     };
   }
 }

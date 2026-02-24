@@ -17,12 +17,13 @@ class _BuildingsScreenState extends State<BuildingsScreen> {
   @override
   void initState() {
     super.initState();
+    _dataService.initialize();
     _loadBuildings();
   }
 
   void _loadBuildings() {
     setState(() {
-      _buildings = _dataService.getBuildings();
+      _buildings = List<Building>.from(_dataService.getBuildings());
     });
   }
 
@@ -31,7 +32,7 @@ class _BuildingsScreenState extends State<BuildingsScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Buildings'),
-        backgroundColor: Colors.teal,
+        backgroundColor: const Color(0xFF2563EB),
         foregroundColor: Colors.white,
       ),
       body: ListView.builder(

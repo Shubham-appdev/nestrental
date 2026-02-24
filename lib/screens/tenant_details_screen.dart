@@ -33,7 +33,7 @@ class _TenantDetailsScreenState extends State<TenantDetailsScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Tenant Details'),
-        backgroundColor: Colors.teal,
+        backgroundColor: const Color(0xFF2563EB),
         foregroundColor: Colors.white,
         actions: [
           IconButton(
@@ -58,7 +58,7 @@ class _TenantDetailsScreenState extends State<TenantDetailsScreen> {
                   children: [
                     CircleAvatar(
                       radius: 50,
-                      backgroundColor: Colors.teal,
+                      backgroundColor: const Color(0xFF2563EB),
                       child: Text(
                         widget.tenant.name[0].toUpperCase(),
                         style: const TextStyle(
@@ -83,7 +83,7 @@ class _TenantDetailsScreenState extends State<TenantDetailsScreen> {
                         vertical: 6,
                       ),
                       decoration: BoxDecoration(
-                        color: Colors.teal.withOpacity(0.1),
+                        color: const Color(0xFF2563EB).withOpacity(0.1),
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Text(
@@ -91,7 +91,7 @@ class _TenantDetailsScreenState extends State<TenantDetailsScreen> {
                         style: const TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.bold,
-                          color: Colors.teal,
+                          color: const Color(0xFF2563EB),
                         ),
                       ),
                     ),
@@ -196,7 +196,7 @@ class _TenantDetailsScreenState extends State<TenantDetailsScreen> {
       padding: const EdgeInsets.only(bottom: 12),
       child: Row(
         children: [
-          Icon(icon, size: 20, color: Colors.teal),
+          Icon(icon, size: 20, color: const Color(0xFF2563EB)),
           const SizedBox(width: 12),
           Expanded(
             child: Column(

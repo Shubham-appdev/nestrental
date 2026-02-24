@@ -21,13 +21,14 @@ class _TenantsScreenState extends State<TenantsScreen> {
   @override
   void initState() {
     super.initState();
+    _dataService.initialize();
     _loadData();
   }
 
   void _loadData() {
     setState(() {
-      _buildings = _dataService.getBuildings();
-      _tenants = _dataService.getTenants();
+      _buildings = List<Building>.from(_dataService.getBuildings());
+      _tenants = List<Tenant>.from(_dataService.getTenants());
       if (_selectedBuildingId != null) {
         _tenants = _tenants
             .where((t) => t.buildingId == _selectedBuildingId)
@@ -58,7 +59,7 @@ class _TenantsScreenState extends State<TenantsScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Tenants'),
-        backgroundColor: Colors.teal,
+        backgroundColor: const Color(0xFF2563EB),
         foregroundColor: Colors.white,
       ),
       body: Column(
@@ -103,7 +104,7 @@ class _TenantsScreenState extends State<TenantsScreen> {
                         });
                         _loadData();
                       },
-                      selectedColor: Colors.teal,
+                      selectedColor: const Color(0xFF2563EB),
                       labelStyle: TextStyle(
                         color: _selectedBuildingId == null
                             ? Colors.white
@@ -124,7 +125,7 @@ class _TenantsScreenState extends State<TenantsScreen> {
                       });
                       _loadData();
                     },
-                    selectedColor: Colors.teal,
+                    selectedColor: const Color(0xFF2563EB),
                     labelStyle: TextStyle(
                       color: _selectedBuildingId == building.id
                           ? Colors.white
@@ -191,7 +192,7 @@ class _TenantsScreenState extends State<TenantsScreen> {
             children: [
               CircleAvatar(
                 radius: 28,
-                backgroundColor: Colors.teal,
+                backgroundColor: const Color(0xFF2563EB),
                 child: Text(
                   tenant.name[0].toUpperCase(),
                   style: const TextStyle(

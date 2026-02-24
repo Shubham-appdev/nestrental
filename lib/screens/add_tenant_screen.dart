@@ -92,7 +92,7 @@ class _AddTenantScreenState extends State<AddTenantScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Add Tenant'),
-        backgroundColor: Colors.teal,
+        backgroundColor: const Color(0xFF2563EB),
         foregroundColor: Colors.white,
       ),
       body: SingleChildScrollView(
@@ -105,12 +105,12 @@ class _AddTenantScreenState extends State<AddTenantScreen> {
               // Room Info Card
               Card(
                 elevation: 2,
-                color: Colors.teal.withOpacity(0.1),
+                color: const Color(0xFF2563EB).withOpacity(0.1),
                 child: Padding(
                   padding: const EdgeInsets.all(16),
                   child: Row(
                     children: [
-                      const Icon(Icons.meeting_room, color: Colors.teal),
+                      const Icon(Icons.meeting_room, color: Color(0xFF2563EB)),
                       const SizedBox(width: 12),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -306,7 +306,7 @@ class _AddTenantScreenState extends State<AddTenantScreen> {
                 child: ElevatedButton(
                   onPressed: _saveTenant,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.teal,
+                    backgroundColor: const Color(0xFF2563EB),
                     foregroundColor: Colors.white,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
