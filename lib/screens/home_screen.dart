@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
 import '../services/data_service.dart';
+import '../services/auth_service.dart';
 import 'buildings_screen.dart';
 import 'tenants_screen.dart';
 import 'queries_screen.dart';
 import 'cleaning_requests_screen.dart';
 import 'wifi_password_screen.dart';
 import 'gate_pass_screen.dart';
+import 'rent_payment_screen.dart';
+import 'notices_screen.dart';
+import 'emergency_contacts_screen.dart';
+import 'role_selection_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -16,6 +21,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final DataService _dataService = DataService();
+  final AuthService _authService = AuthService();
   Map<String, dynamic> _stats = {};
 
   @override
@@ -36,12 +42,27 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'Nest Rental',
+          'Owner Dashboard',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         backgroundColor: const Color(0xFF2563EB),
         foregroundColor: Colors.white,
         elevation: 0,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.switch_account),
+            tooltip: 'Switch Role',
+            onPressed: () {
+              _authService.logout();
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const RoleSelectionScreen(),
+                ),
+              );
+            },
+          ),
+        ],
       ),
       body: RefreshIndicator(
         onRefresh: () async {
@@ -219,6 +240,46 @@ class _HomeScreenState extends State<HomeScreen> {
                   context,
                   MaterialPageRoute(
                     builder: (context) => const WiFiPasswordScreen(),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 12),
+              _buildActionCard(
+                'Rent Payments',
+                'Manage rent payments and dues',
+                Icons.payment,
+                Colors.green,
+                () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const RentPaymentScreen(),
+                  ),
+                ),
+                badge: _stats['pendingRentPayments'] ?? 0,
+              ),
+              const SizedBox(height: 12),
+              _buildActionCard(
+                'Notices',
+                'Post and view announcements',
+                Icons.campaign,
+                Colors.orange,
+                () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const NoticesScreen(),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 12),
+              _buildActionCard(
+                'Emergency Contacts',
+                'Important contacts and helplines',
+                Icons.contact_phone,
+                Colors.red,
+                () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const EmergencyContactsScreen(),
                   ),
                 ),
               ),

@@ -4,6 +4,18 @@ import '../models/tenant.dart';
 import '../models/query.dart';
 import '../models/cleaning_request.dart';
 import '../models/gate_pass.dart';
+import '../models/rent_payment.dart';
+import '../models/notice.dart';
+import '../models/emergency_contact.dart';
+
+// Export all enums for easy access
+export '../models/room.dart' show RoomStatus;
+export '../models/query.dart' show QueryStatus, QueryType;
+export '../models/cleaning_request.dart' show CleaningStatus, CleaningType;
+export '../models/gate_pass.dart' show GatePassStatus, GatePassType;
+export '../models/rent_payment.dart' show PaymentStatus, PaymentMethod;
+export '../models/notice.dart' show NoticePriority;
+export '../models/emergency_contact.dart' show ContactType;
 
 class DataService {
   static final DataService _instance = DataService._internal();
@@ -16,6 +28,9 @@ class DataService {
   final List<Query> _queries = [];
   final List<CleaningRequest> _cleaningRequests = [];
   final List<GatePass> _gatePasses = [];
+  final List<RentPayment> _rentPayments = [];
+  final List<Notice> _notices = [];
+  final List<EmergencyContact> _emergencyContacts = [];
 
   bool _initialized = false;
 
@@ -614,6 +629,83 @@ class DataService {
     }
   }
 
+  // Rent Payments
+  List<RentPayment> getRentPayments() => List.unmodifiable(_rentPayments);
+
+  List<RentPayment> getRentPaymentsByTenant(String tenantId) {
+    return _rentPayments.where((p) => p.tenantId == tenantId).toList();
+  }
+
+  List<RentPayment> getRentPaymentsByBuilding(String buildingId) {
+    return _rentPayments.where((p) => p.buildingId == buildingId).toList();
+  }
+
+  void addRentPayment(RentPayment payment) {
+    _rentPayments.add(payment);
+  }
+
+  void updateRentPayment(RentPayment payment) {
+    final index = _rentPayments.indexWhere((p) => p.id == payment.id);
+    if (index != -1) {
+      _rentPayments[index] = payment;
+    }
+  }
+
+  // Notices
+  List<Notice> getNotices() => List.unmodifiable(_notices);
+
+  List<Notice> getNoticesByBuilding(String? buildingId) {
+    if (buildingId == null) {
+      return _notices.where((n) => n.buildingId == null).toList();
+    }
+    return _notices
+        .where((n) => n.buildingId == null || n.buildingId == buildingId)
+        .toList();
+  }
+
+  void addNotice(Notice notice) {
+    _notices.add(notice);
+  }
+
+  void updateNotice(Notice notice) {
+    final index = _notices.indexWhere((n) => n.id == notice.id);
+    if (index != -1) {
+      _notices[index] = notice;
+    }
+  }
+
+  void deleteNotice(String id) {
+    _notices.removeWhere((n) => n.id == id);
+  }
+
+  // Emergency Contacts
+  List<EmergencyContact> getEmergencyContacts() =>
+      List.unmodifiable(_emergencyContacts);
+
+  List<EmergencyContact> getEmergencyContactsByBuilding(String? buildingId) {
+    if (buildingId == null) {
+      return _emergencyContacts.where((c) => c.buildingId == null).toList();
+    }
+    return _emergencyContacts
+        .where((c) => c.buildingId == null || c.buildingId == buildingId)
+        .toList();
+  }
+
+  void addEmergencyContact(EmergencyContact contact) {
+    _emergencyContacts.add(contact);
+  }
+
+  void updateEmergencyContact(EmergencyContact contact) {
+    final index = _emergencyContacts.indexWhere((c) => c.id == contact.id);
+    if (index != -1) {
+      _emergencyContacts[index] = contact;
+    }
+  }
+
+  void deleteEmergencyContact(String id) {
+    _emergencyContacts.removeWhere((c) => c.id == id);
+  }
+
   // Statistics
   Map<String, dynamic> getStatistics() {
     final totalRooms = _rooms.length;
@@ -625,6 +717,10 @@ class DataService {
     final pendingCleaning = _cleaningRequests.where((c) => c.status == CleaningStatus.pending).length;
     final pendingGatePasses = _gatePasses.where((g) => g.status == GatePassStatus.pending).length;
 
+    final pendingRentPayments = _rentPayments
+        .where((p) => p.status == PaymentStatus.pending || p.status == PaymentStatus.overdue)
+        .length;
+
     return {
       'totalBuildings': _buildings.length,
       'totalRooms': totalRooms,
@@ -635,6 +731,7 @@ class DataService {
       'pendingQueries': pendingQueries,
       'pendingCleaning': pendingCleaning,
       'pendingGatePasses': pendingGatePasses,
+      'pendingRentPayments': pendingRentPayments,
     };
   }
 }
