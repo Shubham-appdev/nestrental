@@ -7,6 +7,8 @@ import '../models/gate_pass.dart';
 import '../models/rent_payment.dart';
 import '../models/notice.dart';
 import '../models/emergency_contact.dart';
+import '../models/tenant_registration.dart';
+import '../models/chat_message.dart';
 
 // Export all enums for easy access
 export '../models/room.dart' show RoomStatus;
@@ -16,6 +18,7 @@ export '../models/gate_pass.dart' show GatePassStatus, GatePassType;
 export '../models/rent_payment.dart' show PaymentStatus, PaymentMethod;
 export '../models/notice.dart' show NoticePriority;
 export '../models/emergency_contact.dart' show ContactType;
+export '../models/tenant_registration.dart' show RegistrationStatus;
 
 class DataService {
   static final DataService _instance = DataService._internal();
@@ -31,6 +34,8 @@ class DataService {
   final List<RentPayment> _rentPayments = [];
   final List<Notice> _notices = [];
   final List<EmergencyContact> _emergencyContacts = [];
+  final List<TenantRegistration> _tenantRegistrations = [];
+  final List<ChatMessage> _chatMessages = [];
 
   bool _initialized = false;
 
@@ -704,6 +709,99 @@ class DataService {
 
   void deleteEmergencyContact(String id) {
     _emergencyContacts.removeWhere((c) => c.id == id);
+  }
+
+  // Tenant Registrations
+  List<TenantRegistration> getTenantRegistrations() =>
+      List.unmodifiable(_tenantRegistrations);
+
+  List<TenantRegistration> getPendingRegistrations() {
+    return _tenantRegistrations
+        .where((r) => r.status == RegistrationStatus.pending)
+        .toList();
+  }
+
+  List<TenantRegistration> getRegistrationsByBuilding(String buildingId) {
+    return _tenantRegistrations
+        .where((r) => r.buildingId == buildingId)
+        .toList();
+  }
+
+  TenantRegistration? getRegistrationById(String id) {
+    try {
+      return _tenantRegistrations.firstWhere((r) => r.id == id);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  void addTenantRegistration(TenantRegistration registration) {
+    _tenantRegistrations.add(registration);
+  }
+
+  void updateTenantRegistration(TenantRegistration registration) {
+    final index = _tenantRegistrations.indexWhere((r) => r.id == registration.id);
+    if (index != -1) {
+      _tenantRegistrations[index] = registration;
+    }
+  }
+
+  void approveRegistration(String registrationId, String approvedBy) {
+    final index = _tenantRegistrations.indexWhere((r) => r.id == registrationId);
+    if (index != -1) {
+      final registration = _tenantRegistrations[index];
+      _tenantRegistrations[index] = registration.copyWith(
+        status: RegistrationStatus.approved,
+        approvedAt: DateTime.now(),
+        approvedBy: approvedBy,
+      );
+
+      // Create the actual tenant
+      final tenant = Tenant(
+        id: 't${DateTime.now().millisecondsSinceEpoch}',
+        name: registration.name,
+        phone: registration.phone,
+        email: registration.email,
+        address: registration.address,
+        roomId: registration.roomId,
+        buildingId: registration.buildingId,
+        moveInDate: registration.moveInDate,
+        depositAmount: registration.depositAmount,
+        emergencyContact: registration.emergencyContact,
+        emergencyPhone: registration.emergencyPhone,
+      );
+
+      addTenant(tenant);
+    }
+  }
+
+  void rejectRegistration(String registrationId, String reason) {
+    final index = _tenantRegistrations.indexWhere((r) => r.id == registrationId);
+    if (index != -1) {
+      final registration = _tenantRegistrations[index];
+      _tenantRegistrations[index] = registration.copyWith(
+        status: RegistrationStatus.rejected,
+        rejectionReason: reason,
+      );
+    }
+  }
+
+  // Chat Messages
+  List<ChatMessage> getChatMessages(String buildingId) {
+    return _chatMessages
+        .where((m) => m.buildingId == buildingId)
+        .toList()
+      ..sort((a, b) => a.timestamp.compareTo(b.timestamp));
+  }
+
+  void addChatMessage(ChatMessage message) {
+    _chatMessages.add(message);
+  }
+
+  int getPendingRegistrationsCount() {
+    return _tenantRegistrations
+        .where((r) => r.status == RegistrationStatus.pending)
+        .length;
   }
 
   // Statistics

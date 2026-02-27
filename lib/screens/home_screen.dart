@@ -11,6 +11,8 @@ import 'rent_payment_screen.dart';
 import 'notices_screen.dart';
 import 'emergency_contacts_screen.dart';
 import 'role_selection_screen.dart';
+import 'tenant_approvals_screen.dart';
+import 'group_chat_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -164,6 +166,19 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               const SizedBox(height: 16),
               _buildActionCard(
+                'Group Chat',
+                'Chat with tenants in your buildings',
+                Icons.chat,
+                Colors.teal,
+                () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const GroupChatScreen(isOwner: true),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 12),
+              _buildActionCard(
                 'Buildings & Rooms',
                 'View all buildings and manage rooms',
                 Icons.apartment,
@@ -187,6 +202,20 @@ class _HomeScreenState extends State<HomeScreen> {
                     builder: (context) => const TenantsScreen(),
                   ),
                 ),
+              ),
+              const SizedBox(height: 12),
+              _buildActionCard(
+                'Tenant Approvals',
+                'Review and approve new tenant registrations',
+                Icons.person_add,
+                Colors.purple,
+                () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const TenantApprovalsScreen(),
+                  ),
+                ).then((_) => _loadStats()),
+                badge: _dataService.getPendingRegistrationsCount(),
               ),
               const SizedBox(height: 12),
               _buildActionCard(
